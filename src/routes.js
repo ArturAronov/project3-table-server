@@ -27,10 +27,10 @@ router.get('/api/user/profile', authenticateUser, (await import('./controllers/a
 router.put('/api/user/profile/update', authenticateUser, (await import('./controllers/api/user/profile/update.js')).default)
 
 // API | BUSINESS TABLES | AUTH REQUIRED
-// router.get('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/index.js')).default)
-// router.get('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/create.js')).default)
-// router.get('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/update.js')).default)
-// router.get('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/destroy.js')).default)
+router.get('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/index.js')).default)
+router.post('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/create.js')).default)
+router.put('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/update.js')).default)
+router.delete('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/destroy.js')).default)
 
 // API | BUSINESS BOOKINGS | AUTH REQUIRED
 // router.get('/api/business/booking', authenticateUser, (await import('./controllers/api/business/booking/index.js')).default)
