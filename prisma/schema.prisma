@@ -57,7 +57,8 @@ model Booking {
 model Table {
   id           Int         @id @default(autoincrement())
   tableNr      String
-  capacity     Int
+  minCapacity  Int
+  maxCapacity  Int
   Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
   restaurantId String?
 }
