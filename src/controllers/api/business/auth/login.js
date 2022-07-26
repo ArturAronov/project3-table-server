@@ -7,7 +7,7 @@ import _ from 'lodash'
 import handleErrors from '../../../_helpers/handle-errors.js'
 import prisma from '../../../_helpers/prisma.js'
 
-const loginSchema = yup.object({
+const userInput = yup.object({
   email: yup.string().required().test({
     message: () => 'Please enter your email address',
     test: (value) => value
@@ -61,7 +61,7 @@ const authenticate = (req, res, next) => {
 const controllersApiBusinessAuthLogin = async (req, res, next) => {
   try {
     const { body } = req
-    await loginSchema.validate(body, {
+    await userInput.validate(body, {
       abortEarly: false,
       stripUnknown: true
     })

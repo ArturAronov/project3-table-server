@@ -5,7 +5,6 @@ import prisma from '../../../_helpers/prisma.js'
 
 const controllersApiUserProfileIndex = async (req, res) => {
   try {
-    // console.log(req.session.user.id)
     const { session: {
       user: {
         id

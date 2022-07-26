@@ -6,7 +6,7 @@ import prisma from '../../../_helpers/prisma.js'
 import handleErrors from '../../../_helpers/handle-errors.js'
 import uploadFileAsync from '../../../_helpers/upload-file.js'
 
-const signupSchema = yup.object({
+const userInput = yup.object({
   name: yup.string().required().test({
     message: () => 'Please enter your name',
     test: (value) => value
@@ -72,32 +72,32 @@ const signupSchema = yup.object({
 
 const controllersApiBusinessAuthSignup = async (req, res) => {
   try {
-    const verifiedData = await signupSchema.validate(req.body, {
+    const verifiedInput = await userInput.validate(req.body, {
       abortEarly: false,
       stripUnknown: true
     })
 
-    const businessEmail = verifiedData.email
+    const businessEmail = verifiedInput.email
     const businessEmailLettersOnly = businessEmail.split('').filter((element) => /[A-Za-z0-9]/.test(element)).join('')
 
-    await uploadFileAsync(businessEmailLettersOnly, verifiedData, req)
+    await uploadFileAsync(businessEmailLettersOnly, verifiedInput, req)
 
     const newBusiness = await prisma.restaurant.create({
       data: {
-        name: verifiedData.name,
-        phone: verifiedData.phone,
-        email: verifiedData.email,
-        building: verifiedData.building,
-        street: verifiedData.street,
-        city: verifiedData.city,
-        country: verifiedData.country,
-        zipCode: verifiedData.zipCode,
-        logo: verifiedData.logo || 'https://unit-2-cardify.s3.ap-northeast-1.amazonaws.com/table-logo.png',
-        open: verifiedData.open,
-        close: verifiedData.close,
-        turnaround: verifiedData.turnaround,
-        daysOperating: verifiedData.daysOperating,
-        passwordHash: await bcrypt.hash(verifiedData.password, 10)
+        name: verifiedInput.name,
+        phone: verifiedInput.phone,
+        email: verifiedInput.email,
+        building: verifiedInput.building,
+        street: verifiedInput.street,
+        city: verifiedInput.city,
+        country: verifiedInput.country,
+        zipCode: verifiedInput.zipCode,
+        logo: verifiedInput.logo || 'https://unit-2-cardify.s3.ap-northeast-1.amazonaws.com/table-logo.png',
+        open: verifiedInput.open,
+        close: verifiedInput.close,
+        turnaround: verifiedInput.turnaround,
+        daysOperating: verifiedInput.daysOperating,
+        passwordHash: await bcrypt.hash(verifiedInput.password, 10)
       }
     })
 

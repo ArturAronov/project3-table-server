@@ -5,7 +5,7 @@ import _ from 'lodash'
 import prisma from '../../../_helpers/prisma.js'
 import handleErrors from '../../../_helpers/handle-errors.js'
 
-const signupSchema = yup.object({
+const userInput = yup.object({
   firstName: yup.string().required().test({
     message: () => 'Please enter your first name',
     test: (value) => value
@@ -41,18 +41,18 @@ const signupSchema = yup.object({
 
 const controllersApiUserAuthSignup = async (req, res) => {
   try {
-    const verifiedData = await signupSchema.validate(req.body, {
+    const verifiedInput = await userInput.validate(req.body, {
       abortEarly: false,
       stripUnknown: true
     })
 
     const newUser = await prisma.user.create({
       data: {
-        firstName: verifiedData.firstName,
-        lastName: verifiedData.lastName,
-        email: verifiedData.email,
-        phone: verifiedData.phone,
-        passwordHash: await bcrypt.hash(verifiedData.password, 10)
+        firstName: verifiedInput.firstName,
+        lastName: verifiedInput.lastName,
+        email: verifiedInput.email,
+        phone: verifiedInput.phone,
+        passwordHash: await bcrypt.hash(verifiedInput.password, 10)
       }
     })
 
