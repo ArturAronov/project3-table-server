@@ -18,25 +18,28 @@ router.delete('/api/auth/logout', (await import('./controllers/api/auth/logout.j
 router.get('/api/restaurants', (await import('./controllers/api/restaurants/index.js')).default)
 
 // API | USER BOOKINGS | AUTH REQUIRED
-router.post('/api/user/booking', authenticateUser('json'), (await import('./controllers/api/user/booking/create.js')).default)
-router.put('/api/user/booking/:id', authenticateUser('json'), (await import('./controllers/api/user/booking/update.js')).default)
-router.delete('/api/user/booking/:id', authenticateUser('json'), (await import('./controllers/api/user/booking/destroy.js')).default)
+router.post('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/create.js')).default)
+// router.put('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/update.js')).default)
+// router.delete('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/destroy.js')).default)
 
 // API | USER PROFILE | AUTH REQUIRED
-router.get('/api/user/profile', authenticateUser('json'), (await import('./controllers/api/user/profile/index.js')).default)
-router.put('/api/user/profile/update', authenticateUser('json'), (await import('./controllers/api/user/profile/update.js')).default)
+router.get('/api/user/profile', authenticateUser, (await import('./controllers/api/user/profile/index.js')).default)
+router.put('/api/user/profile/update', authenticateUser, (await import('./controllers/api/user/profile/update.js')).default)
+
+// API | BUSINESS TABLES | AUTH REQUIRED
+// router.get('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/index.js')).default)
+// router.get('/api/business/table', authenticateUser, (await import('./controllers/api/business/table/create.js')).default)
+// router.get('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/update.js')).default)
+// router.get('/api/business/table/:id', authenticateUser, (await import('./controllers/api/business/table/destroy.js')).default)
 
 // API | BUSINESS BOOKINGS | AUTH REQUIRED
-router.get('/api/business/booking', authenticateUser('json'), (await import('./controllers/api/business/booking/index.js')).default)
-router.post('/api/business/booking', authenticateUser('json'), (await import('./controllers/api/business/booking/create.js')).default)
-router.put('/api/business/booking/:id', authenticateUser('json'), (await import('./controllers/api/business/booking/update.js')).default)
-router.delete('/api/business/booking/:id', authenticateUser('json'), (await import('./controllers/api/business/booking/destroy.js')).default)
+// router.get('/api/business/booking', authenticateUser, (await import('./controllers/api/business/booking/index.js')).default)
+// router.post('/api/business/booking', authenticateUser, (await import('./controllers/api/business/booking/create.js')).default)
+// router.put('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/update.js')).default)
+// router.delete('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/destroy.js')).default)
 
 // API | BUSINESS PROFILE | AUTH REQUIRED
-router.get('/api/business/profile', authenticateUser('json'), (await import('./controllers/api/business/profile/index.js')).default)
-router.put('/api/business/profile/update', authenticateUser('json'), (await import('./controllers/api/business/profile/update.js')).default)
-
-// WELCOME
-router.get('/', (await import('./controllers/welcome.js')).default)
+router.get('/api/business/profile', authenticateUser, (await import('./controllers/api/business/profile/index.js')).default)
+router.put('/api/business/profile/update', authenticateUser, (await import('./controllers/api/business/profile/update.js')).default)
 
 export default router
