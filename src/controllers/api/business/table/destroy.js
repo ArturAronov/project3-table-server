@@ -3,7 +3,15 @@ import handleErrors from '../../../_helpers/handle-errors.js'
 
 const controllersApiBusinessTableDestroy = async (req, res) => {
   try {
-    return res.status(201)
+    const id = parseInt(req.params.id)
+
+    const deleteTable = await prisma.table.delete({
+      where: {
+        id
+      }
+    })
+
+    return res.status(201).json(deleteTable)
   } catch (err) {
     handleErrors(res, err)
   }
