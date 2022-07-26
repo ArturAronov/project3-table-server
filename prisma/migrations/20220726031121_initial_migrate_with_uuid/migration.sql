@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Restaurant" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -13,21 +13,17 @@ CREATE TABLE "Restaurant" (
     "open" TEXT NOT NULL,
     "close" TEXT NOT NULL,
     "turnaround" INTEGER NOT NULL,
-    "daysOperating" TEXT NOT NULL,
-
-    CONSTRAINT "Restaurant_pkey" PRIMARY KEY ("id")
+    "daysOperating" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "email" TEXT,
     "phone" TEXT NOT NULL,
-    "passwordHash" TEXT NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    "passwordHash" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -42,8 +38,8 @@ CREATE TABLE "Booking" (
     "date" TIMESTAMP(3) NOT NULL,
     "time" TEXT NOT NULL,
     "covers" INTEGER NOT NULL,
-    "restaurantId" INTEGER NOT NULL,
-    "userId" INTEGER,
+    "restaurantId" TEXT NOT NULL,
+    "userId" TEXT,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
@@ -53,16 +49,22 @@ CREATE TABLE "Table" (
     "id" SERIAL NOT NULL,
     "tableNr" TEXT NOT NULL,
     "capacity" INTEGER NOT NULL,
-    "restaurantId" INTEGER NOT NULL,
+    "restaurantId" TEXT NOT NULL,
 
     CONSTRAINT "Table_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Restaurant_id_key" ON "Restaurant"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Restaurant_phone_key" ON "Restaurant"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Restaurant_email_key" ON "Restaurant"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

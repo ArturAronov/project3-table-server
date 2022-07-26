@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Restaurant {
-  id            Int       @id @default(autoincrement())
+  id            String    @unique @default(uuid())
   name          String
   phone         String    @unique
   email         String    @unique
@@ -28,7 +28,7 @@ model Restaurant {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
+  id           String    @unique @default(uuid())
   firstName    String
   lastName     String
   email        String?   @unique
@@ -38,8 +38,8 @@ model User {
 }
 
 model Booking {
-  id           Int        @id @default(autoincrement())
-  dateCreated  DateTime   @default(now())
+  id           Int         @id @default(autoincrement())
+  dateCreated  DateTime    @default(now())
   dateEdied    DateTime?
   firstName    String
   lastName     String
@@ -48,16 +48,16 @@ model Booking {
   date         DateTime
   time         String
   covers       Int
-  restaurantId Int
-  userId       Int?
-  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  User         User?      @relation(fields: [userId], references: [id])
+  restaurantId String?
+  userId       String?
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  User         User?       @relation(fields: [userId], references: [id])
 }
 
 model Table {
-  id           Int        @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   tableNr      String
   capacity     Int
-  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  restaurantId Int
+  Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
 }

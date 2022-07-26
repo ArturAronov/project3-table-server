@@ -77,6 +77,7 @@ const controllersApiBusinessAuthSignup = async (req, res) => {
       stripUnknown: true
     })
 
+    console.log(verifiedData)
     const businessEmail = verifiedData.email
     const businessEmailLettersOnly = businessEmail.split('').filter((element) => /[A-Za-z0-9]/.test(element)).join('')
 
