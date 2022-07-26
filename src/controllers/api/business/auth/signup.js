@@ -19,7 +19,7 @@ const signupSchema = yup.object({
     message: () => 'Email already exists',
     test: async (value) => {
       try {
-        await prisma.user.findUnique({
+        await prisma.business.findUnique({
           where: {
             email: value
           },
@@ -77,7 +77,6 @@ const controllersApiBusinessAuthSignup = async (req, res) => {
       stripUnknown: true
     })
 
-    console.log(verifiedData)
     const businessEmail = verifiedData.email
     const businessEmailLettersOnly = businessEmail.split('').filter((element) => /[A-Za-z0-9]/.test(element)).join('')
 
@@ -102,7 +101,7 @@ const controllersApiBusinessAuthSignup = async (req, res) => {
       }
     })
 
-    req.session.user = {
+    req.session.restaurant = {
       id: newBusiness.id
     }
 

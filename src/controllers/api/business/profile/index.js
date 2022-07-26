@@ -5,9 +5,9 @@ import prisma from '../../../_helpers/prisma.js'
 
 const controllersApiBusinessProfileIndex = async (req, res) => {
   try {
-    // console.log(req.session.user.id)
+    console.log(req.session.restaurant.id)
     const { session: {
-      user: {
+      restaurant: {
         id
       }
     }
