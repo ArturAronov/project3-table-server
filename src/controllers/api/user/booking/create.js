@@ -47,6 +47,7 @@ const controllersApiUserBookingCreate = async (req, res) => {
       }
     })
 
+    const maxTableCapacity = Math.max(...tables.map((element) => element.maxCapacity))
     const daysOperatingArr = restaurant.daysOperating.split(',').map((element) => element.trim())
     const restaurantOpenInt = parseInt(restaurant.open.split(':').join(''))
     const restaurantCloseInt = parseInt(restaurant.close.split(':').join(''))
@@ -59,6 +60,7 @@ const controllersApiUserBookingCreate = async (req, res) => {
     // 3.1) Extract all bookings for the day by filtering out using day / month / year  ------------> OK!
     // 3.2) Iterate over tables and check in minCapacity and maxCapacity if any table is available -> OK!
     // 3.3) Verify that there is no time conflict with existing bookings ---------------------------> OK!
+    // 4) Check that restaurant has table large enough to facilitate the booking -------------------> OK!
 
     // Filter out which tables are suitable for the booking, given the min and max seating capacity (3.2)
     const tablesCapacityAvailable = tables.filter((element) => element.minCapacity <= verifiedInput.covers && element.maxCapacity >= verifiedInput.covers)
@@ -77,27 +79,31 @@ const controllersApiUserBookingCreate = async (req, res) => {
       if (daysOperatingArr.includes(verifiedInput.day)) {
         // Verify if booking time is within the opening hours (2)
         if (bookingTimeInt >= restaurantOpenInt && bookingTimeInt <= restaurantCloseInt) {
-          // Verify that there's a tables available on the booking day (3)
-          if (!verifyTime) {
-            return prisma.booking.create({
-              data: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                phone: user.phone,
-                covers: verifiedInput.covers,
-                time: verifiedInput.time,
-                day: verifiedInput.day,
-                dayDate: verifiedInput.dayDate,
-                month: verifiedInput.month,
-                year: verifiedInput.year,
-                tableId: tablesCapacityAvailable[0].id,
-                restaurantId,
-                userId
-              }
-            })
+          // Verify that restaurant has table large enough to facilitate the booking (4)
+          if (maxTableCapacity > verifiedInput.covers) {
+            // Verify that there's a tables available on the booking day (3)
+            if (!verifyTime) {
+              return prisma.booking.create({
+                data: {
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  email: user.email,
+                  phone: user.phone,
+                  covers: verifiedInput.covers,
+                  time: verifiedInput.time,
+                  day: verifiedInput.day,
+                  dayDate: verifiedInput.dayDate,
+                  month: verifiedInput.month,
+                  year: verifiedInput.year,
+                  tableId: tablesCapacityAvailable[0].id,
+                  restaurantId,
+                  userId
+                }
+              })
+            }
+            return `There's no tables available for ${verifiedInput.covers} at ${verifiedInput.time}`
           }
-          return `There's no tables available for ${verifiedInput.covers} at ${verifiedInput.time}`
+          return `Restaurant doesn't have any tables that could accomodate ${verifiedInput.covers}`
         }
         return `Restaurant is not open at ${verifiedInput.time}`
       }
