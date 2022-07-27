@@ -48,6 +48,7 @@ model Booking {
   covers       Int
   time         String
   day          String
+  dayDate      String
   month        String
   year         String
   restaurantId String
