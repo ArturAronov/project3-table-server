@@ -20,7 +20,7 @@ router.get('/api/restaurants', (await import('./controllers/api/restaurants/inde
 // API | USER BOOKINGS | AUTH REQUIRED
 router.post('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/create.js')).default)
 // router.put('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/update.js')).default)
-// router.delete('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/destroy.js')).default)
+router.delete('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/destroy.js')).default)
 
 // API | USER PROFILE | AUTH REQUIRED
 router.get('/api/user/profile', authenticateUser, (await import('./controllers/api/user/profile/index.js')).default)
