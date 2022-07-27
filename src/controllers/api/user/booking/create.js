@@ -53,12 +53,12 @@ const controllersApiUserBookingCreate = async (req, res) => {
     const tableTurnaroundInt = restaurant.turnaround * 100
     const bookingTimeInt = parseInt(verifiedInput.time.split(':').join(''))
 
-    // 1) Check if restaurant is open on the given day  --------------------------------------------------> OK!
-    // 2) Check if booking is between opening and closing hours ------------------------------------------> OK!
+    // 1) Check if restaurant is open on the given day  --------------------------------------------> OK!
+    // 2) Check if booking is between opening and closing hours ------------------------------------> OK!
     // 3) Check if there's tables available on the given day
-    // 3.1) Extract all bookings for the day by filtering out using day / month / year  ------------------> OK!
-    // 3.2) Iterate over tables and check in minCapacity and maxCapacity if any table is available -------> OK!
-    // 3.3) Verify that there is no time conflict with existing bookings ---------------------------------> OK!
+    // 3.1) Extract all bookings for the day by filtering out using day / month / year  ------------> OK!
+    // 3.2) Iterate over tables and check in minCapacity and maxCapacity if any table is available -> OK!
+    // 3.3) Verify that there is no time conflict with existing bookings ---------------------------> OK!
 
     // Filter out which tables are suitable for the booking, given the min and max seating capacity (3.2)
     const tablesCapacityAvailable = tables.filter((element) => element.minCapacity <= verifiedInput.covers && element.maxCapacity >= verifiedInput.covers)
