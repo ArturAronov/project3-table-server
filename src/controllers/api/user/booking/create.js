@@ -10,7 +10,7 @@ const userInput = yup.object({
   month: yup.string().required(),
   year: yup.string().required()
 })
-// eslint-disable-next-line consistent-return
+
 const controllersApiUserBookingCreate = async (req, res) => {
   try {
     const userId = req.session.user.id
