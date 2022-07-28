@@ -35,7 +35,7 @@ router.delete('/api/business/table/:id', authenticateUser, (await import('./cont
 // API | BUSINESS BOOKINGS | AUTH REQUIRED
 router.get('/api/business/booking', authenticateUser, (await import('./controllers/api/business/booking/index.js')).default)
 router.post('/api/business/booking', authenticateUser, (await import('./controllers/api/business/booking/create.js')).default)
-// router.put('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/update.js')).default)
+router.put('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/update.js')).default)
 router.delete('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/destroy.js')).default)
 
 // API | BUSINESS PROFILE | AUTH REQUIRED
