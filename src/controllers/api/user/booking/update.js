@@ -40,6 +40,7 @@ const controllersApiUserBookingUpdate = async (req, res) => {
 
     const bookingsForTheDay = await prisma.booking.findMany({
       where: {
+        restaurantId: bookingId.restaurantId,
         dayDate: verifiedInput.dayDate,
         month: verifiedInput.month,
         year: verifiedInput.year
@@ -79,7 +80,7 @@ const controllersApiUserBookingUpdate = async (req, res) => {
         // Verify if booking time is within the opening hours (2)
         if (bookingTimeInt >= restaurantOpenInt && bookingTimeInt <= restaurantCloseInt) {
           // Verify that restaurant has table large enough to facilitate the booking (4)
-          if (verifiedInput.covers && maxTableCapacity > verifiedInput.covers) {
+          if (maxTableCapacity > (verifiedInput.covers || booking.covers)) {
             // Verify that there's a tables available on the booking day (3)
             if (!verifyTime) {
               return prisma.booking.update({
@@ -100,7 +101,7 @@ const controllersApiUserBookingUpdate = async (req, res) => {
             }
             return `There's no tables available for ${verifiedInput.covers} at ${verifiedInput.time}`
           }
-          return `Restaurant doesn't have any tables that could accomodate ${verifiedInput.covers}`
+          return `Restaurant doesn't have any tables that could accommodate ${verifiedInput.covers}`
         }
         return `Restaurant is not open at ${verifiedInput.time}`
       }
@@ -111,7 +112,7 @@ const controllersApiUserBookingUpdate = async (req, res) => {
 
     return res.status(201).json(createBooking)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 
