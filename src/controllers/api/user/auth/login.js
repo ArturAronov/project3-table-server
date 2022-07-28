@@ -62,7 +62,7 @@ const controllersApiUserAuthLogin = async (req, res, next) => {
 
     return authenticate(req, res, next)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

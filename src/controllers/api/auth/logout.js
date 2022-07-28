@@ -5,7 +5,7 @@ const controllersApiAuthLogout = async (req, res) => {
     await req.session.destroy()
     return res.status(201).json('Successfully Logged Out!')
   } catch (error) {
-    handleErrors(res, error)
+    return handleErrors(res, error)
   }
 }
 

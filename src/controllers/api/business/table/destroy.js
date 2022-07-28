@@ -13,7 +13,7 @@ const controllersApiBusinessTableDestroy = async (req, res) => {
 
     return res.status(201).json(deleteTable)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

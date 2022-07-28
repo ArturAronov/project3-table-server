@@ -36,7 +36,7 @@ const controllersApiBusinessTableUpdate = async (req, res) => {
 
     return res.status(201).json(updateTable)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

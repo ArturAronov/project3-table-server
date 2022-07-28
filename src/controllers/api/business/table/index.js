@@ -10,7 +10,7 @@ const controllersApiBusinessTableIndex = async (req, res) => {
     })
     return res.status(201).json(getTables)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

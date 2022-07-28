@@ -114,7 +114,7 @@ const controllersApiUserBookingCreate = async (req, res) => {
 
     return res.status(201).json(createBooking)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

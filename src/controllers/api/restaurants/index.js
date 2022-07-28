@@ -7,7 +7,7 @@ const controllersApiRestaurantsIndex = async (req, res) => {
 
     return res.status(201).json(getRestaurants)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

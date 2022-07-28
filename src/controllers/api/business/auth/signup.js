@@ -109,7 +109,7 @@ const controllersApiBusinessAuthSignup = async (req, res) => {
 
     return res.status(201).json(_.omit(newBusiness, ['passwordHash']))
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

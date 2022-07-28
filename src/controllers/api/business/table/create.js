@@ -26,7 +26,7 @@ const controllersApiBusinessTableCreate = async (req, res) => {
 
     return res.status(201).json(newTable)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

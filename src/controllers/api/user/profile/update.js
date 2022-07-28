@@ -41,7 +41,7 @@ const controllersApiUserProfileUpdate = async (req, res) => {
 
     return res.status(201).json(_.omit(updatedProfile, ['passwordHash']))
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 

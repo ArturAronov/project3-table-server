@@ -13,7 +13,7 @@ const controllersApiBusinessBookingDestroy = async (req, res) => {
 
     return res.status(201).json(deleteBooking)
   } catch (err) {
-    handleErrors(res, err)
+    return handleErrors(res, err)
   }
 }
 
