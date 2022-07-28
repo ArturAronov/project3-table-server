@@ -33,8 +33,6 @@ const controllersApiBusinessBookingUpdate = async (req, res) => {
       rejectOnNotFound: true
     })
 
-    console.log(existingUser)
-
     const booking = await prisma.booking.findUnique({
       where: {
         id: bookingId
