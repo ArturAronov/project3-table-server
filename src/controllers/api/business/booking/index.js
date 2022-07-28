@@ -11,7 +11,7 @@ const controllersApiBusinessBookingIndex = async (req, res) => {
       }
     })
 
-    return res.status(200).json(getBookings)
+    return res.status(201).json(getBookings)
   } catch (err) {
     handleErrors(res, err)
   }
