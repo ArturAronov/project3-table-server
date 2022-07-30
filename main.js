@@ -9,7 +9,7 @@ import { ironSession } from 'iron-session/express'
 import parseData from './src/_middlewares/parse-data.js'
 
 const app = express() // The instance that "host" our server
-const port = process.env.PORT || 3000 // The port number our server runs on
+const port = process.env.PORT || 5000 // The port number our server runs on
 
 // Prints out request information
 app.use(morgan('tiny'))
