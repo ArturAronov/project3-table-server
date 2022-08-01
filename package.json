@@ -76,7 +76,8 @@
           ]
         }
       ],
-      "import/extensions": "off"
+      "import/extensions": "off",
+      "react-hooks/exhaustive-deps": "off"
     }
   }
 }
