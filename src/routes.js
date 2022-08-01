@@ -14,6 +14,9 @@ router.post('/api/user/auth/login', (await import('./controllers/api/user/auth/l
 // API | LOGOUT AUTH
 router.delete('/api/auth/logout', (await import('./controllers/api/auth/logout.js')).default)
 
+// API | PROFILE (BOTH USER & BUSINESS)
+router.get('/api/profile', (await import('./controllers/api/profile/index.js')).default)
+
 // API | RESTAURANTS
 router.get('/api/restaurants', (await import('./controllers/api/restaurants/index.js')).default)
 
@@ -23,7 +26,6 @@ router.put('/api/user/booking/:id', authenticateUser, (await import('./controlle
 router.delete('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/destroy.js')).default)
 
 // API | USER PROFILE | AUTH REQUIRED
-router.get('/api/user/profile', authenticateUser, (await import('./controllers/api/user/profile/index.js')).default)
 router.put('/api/user/profile/update', authenticateUser, (await import('./controllers/api/user/profile/update.js')).default)
 
 // API | BUSINESS TABLES | AUTH REQUIRED
@@ -39,7 +41,6 @@ router.put('/api/business/booking/:id', authenticateUser, (await import('./contr
 router.delete('/api/business/booking/:id', authenticateUser, (await import('./controllers/api/business/booking/destroy.js')).default)
 
 // API | BUSINESS PROFILE | AUTH REQUIRED
-router.get('/api/business/profile', authenticateUser, (await import('./controllers/api/business/profile/index.js')).default)
 router.put('/api/business/profile/update', authenticateUser, (await import('./controllers/api/business/profile/update.js')).default)
 
 export default router
