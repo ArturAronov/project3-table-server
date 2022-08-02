@@ -19,8 +19,10 @@ router.get('/api/profile', (await import('./controllers/api/profile/index.js')).
 
 // API | RESTAURANTS
 router.get('/api/restaurants', (await import('./controllers/api/restaurants/index.js')).default)
+router.get('/api/restaurant/:id', (await import('./controllers/api/restaurant/index.js')).default)
 
 // API | USER BOOKINGS | AUTH REQUIRED
+router.get('/api/user/bookings', authenticateUser, (await import('./controllers/api/user/booking/show.js')).default)
 router.post('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/create.js')).default)
 router.put('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/update.js')).default)
 router.delete('/api/user/booking/:id', authenticateUser, (await import('./controllers/api/user/booking/destroy.js')).default)
