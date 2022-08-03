@@ -38,25 +38,26 @@ model User {
 }
 
 model Booking {
-  id           Int        @id @default(autoincrement())
-  dateCreated  DateTime   @default(now())
-  dateEdited   DateTime?
-  firstName    String
-  lastName     String
-  email        String?
-  phone        String
-  covers       Int
-  time         String
-  day          String
-  dayDate      String
-  month        String
-  year         String
-  restaurantId String
-  userId       String?
-  tableId      Int?
-  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  User         User?      @relation(fields: [userId], references: [id])
-  Table        Table?     @relation(fields: [tableId], references: [id])
+  id             Int        @id @default(autoincrement())
+  dateCreated    DateTime   @default(now())
+  dateEdited     DateTime?
+  firstName      String
+  lastName       String
+  email          String?
+  phone          String
+  covers         Int
+  time           String
+  day            String
+  dayDate        String
+  month          String
+  year           String
+  restaurantName String
+  restaurantId   String
+  userId         String?
+  tableId        Int?
+  Restaurant     Restaurant @relation(fields: [restaurantId], references: [id])
+  User           User?      @relation(fields: [userId], references: [id])
+  Table          Table?     @relation(fields: [tableId], references: [id])
 }
 
 model Table {
