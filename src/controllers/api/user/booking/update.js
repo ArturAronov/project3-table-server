@@ -51,7 +51,7 @@ const controllersApiUserBookingUpdate = async (req, res) => {
     const daysOperatingArr = restaurant.daysOperating.split(',').map((element) => element.trim())
     const restaurantOpenInt = parseInt(restaurant.open.split(':').join(''))
     const restaurantCloseInt = parseInt(restaurant.close.split(':').join(''))
-    const tableTurnaroundInt = restaurant.turnaround * 100
+    const tableTurnaroundInt = ((restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
     const bookingTimeInt = verifiedInput.time ? parseInt(verifiedInput.time.split(':').join('')) : parseInt(booking.time.split(':').join(''))
 
     // 1) Check if restaurant is open on the given day  --------------------------------------------> OK!
@@ -95,7 +95,8 @@ const controllersApiUserBookingUpdate = async (req, res) => {
                   month: verifiedInput.month || booking.month,
                   year: verifiedInput.year || booking.year,
                   covers: verifiedInput.covers || booking.covers,
-                  tableId: tablesCapacityAvailable[0].id
+                  tableId: tablesCapacityAvailable[0].id,
+                  restaurantName: restaurant.name
                 }
               })
             }

@@ -51,7 +51,7 @@ model Booking {
   dayDate        String
   month          String
   year           String
-  restaurantName String
+  restaurantName String?
   restaurantId   String
   userId         String?
   tableId        Int?
