@@ -58,7 +58,7 @@ const controllersApiBusinessBookingCreate = async (req, res) => {
     const bookingTimeInt = parseInt(verifiedInput.time.split(':').join(''))
     const restaurantOpenInt = parseInt(restaurant.open.split(':').join(''))
     const restaurantCloseInt = parseInt(restaurant.close.split(':').join(''))
-    const tableTurnaroundInt = parseInt(restaurant.turnaround) * 100
+    const tableTurnaroundInt = ((restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
 
     const maxTableCapacity = Math.max(...tables.map((element) => element.maxCapacity))
     const daysOperatingArr = restaurant.daysOperating.split(',').map((element) => element)
@@ -106,6 +106,7 @@ const controllersApiBusinessBookingCreate = async (req, res) => {
                   year: verifiedInput.year,
                   tableId: tablesCapacityAvailable[0].id,
                   userId: existingUser ? existingUser.id : null,
+                  restaurantName: restaurant.name,
                   restaurantId
                 }
               })
