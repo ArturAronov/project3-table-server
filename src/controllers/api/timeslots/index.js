@@ -1,5 +1,3 @@
-/* eslint-disable no-else-return */
-/* eslint-disable no-param-reassign */
 import prisma from '../../_helpers/prisma.js'
 import handleErrors from '../../_helpers/handle-errors.js'
 
