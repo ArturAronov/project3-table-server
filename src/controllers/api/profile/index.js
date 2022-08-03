@@ -13,7 +13,6 @@ const controllersApiProfileIndex = async (req, res) => {
     } = req
 
     if (!restaurant?.id && !user?.id) return res.status(401).json('Please Login First!')
-
     let profile
     if (restaurant) {
       profile = await prisma.restaurant.findUnique({
@@ -22,7 +21,7 @@ const controllersApiProfileIndex = async (req, res) => {
         },
         rejectOnNotFound: true
       })
-      profile.authType = 'business'
+      profile.authType = 'restaurant'
     } else {
       profile = await prisma.user.findUnique({
         where: {
