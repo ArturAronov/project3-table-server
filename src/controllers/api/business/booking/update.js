@@ -64,7 +64,7 @@ const controllersApiBusinessBookingUpdate = async (req, res) => {
     const daysOperatingArr = restaurant.daysOperating.split(',').map((element) => element.trim())
     const restaurantOpenInt = parseInt(restaurant.open.split(':').join(''))
     const restaurantCloseInt = parseInt(restaurant.close.split(':').join(''))
-    const tableTurnaroundInt = ((restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
+    const tableTurnaroundInt = (parseInt(restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
     const bookingTimeInt = verifiedInput.time ? parseInt(verifiedInput.time.split(':').join('')) : parseInt(booking.time.split(':').join(''))
 
     // 1) Check if restaurant is open on the given day  --------------------------------------------> OK!
