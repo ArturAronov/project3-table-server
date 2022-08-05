@@ -84,18 +84,20 @@ const controllersApiTimeslotsIndex = async (req, res) => {
     const tableTurnaroundInt = (parseInt(getRestaurant.turnaround / 60) * 100) + (getRestaurant.turnaround % 60)
 
     for (let i = 0; i < timeSlotTemplate.length; i++) {
+      // console.log(blockedTimeSlots)
       for (let j = 0; j < reservationTimes.length; j++) {
-        if (Math.abs(reservationTimes[j] - timeSlotTemplate[i]) <= tableTurnaroundInt) {
+        if (Math.abs(reservationTimes[j] - timeSlotTemplate[i]) < tableTurnaroundInt) {
           // If the reservation time - time slot is smaller than the table turnaround, then there's a time conflict, therefore this time slot gets blocked off and added to blockedTimeSlots array (5).
           blockedTimeSlots.push(timeSlotTemplate[i])
         }
       }
     }
-
     const maxCapacity = Math.max(...getTables.map((element) => element.maxCapacity))
 
     // Remove all of the time slots from the template that are in the blocked time slot array (6).
     const result = timeSlotTemplate.filter((element) => !blockedTimeSlots.includes(element) && element)
+
+    // console.log(result)
 
     const resultObj = {
       tableMax: maxCapacity,
