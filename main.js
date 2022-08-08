@@ -27,7 +27,7 @@ app.use(ironSession({
 }))
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN,
+  origin: process.env.CORS_ORIGIN?.split(','),
   credentials: true
 }))
 
