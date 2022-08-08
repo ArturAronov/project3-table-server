@@ -45,12 +45,37 @@ const controllersApiUserBookingUpdate = async (req, res) => {
 
     const bookingTimeInt = verifiedInput.time ? parseInt(verifiedInput.time.split(':').join('')) : parseInt(booking.time.split(':').join(''))
 
+    const tableTurnaroundInt = (parseInt(restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
+
     // 1) Check if restaurant is open on the given day  --------------------------------------------> OK!
     // 2) Check if booking is between opening and closing hours ------------------------------------> OK!
     // 3) Check that restaurant has table large enough to facilitate the booking -------------------> OK!
 
     // Filter out which tables are suitable for the booking, given the min and max seating capacity (3.2)
-    const tablesCapacityAvailable = tables.filter((element) => element.minCapacity <= (verifiedInput.covers || booking.covers) && element.maxCapacity >= (verifiedInput.covers || booking.covers))
+    const tablesThatFitCapacity = tables.filter((element) => element.minCapacity <= (verifiedInput.covers || booking.covers) && element.maxCapacity >= (verifiedInput.covers || booking.covers))
+
+    const getBookings = await prisma.booking.findMany({
+      where: {
+        restaurantId: restaurant.id,
+        dayDate: verifiedInput.dayDate,
+        month: verifiedInput.month,
+        year: verifiedInput.year,
+        tableId: { in: tablesThatFitCapacity.map((element) => element.id) }
+      }
+    })
+
+    // Get all of the bookings that clash with the current booking time, and put them on the side to be filtered out later
+    const reservedTables = []
+
+    for (let i = 0; i < getBookings.length; i++) {
+      const existingBookingTime = parseInt(getBookings[i].time.split(':').join(''))
+
+      if (Math.abs(existingBookingTime - bookingTimeInt) < tableTurnaroundInt) {
+        reservedTables.push(getBookings[i])
+      }
+    }
+
+    const availableTables = tablesThatFitCapacity.filter((element) => !reservedTables.map((table) => table.tableNr).includes(element.tableNr))
 
     const checkAvailability = () => {
       // Verify if restaurant is open on the booking day (1)
@@ -59,22 +84,26 @@ const controllersApiUserBookingUpdate = async (req, res) => {
         if (bookingTimeInt >= restaurantOpenInt && bookingTimeInt <= restaurantCloseInt) {
           // Verify that restaurant has table large enough to facilitate the booking (4)
           if (maxTableCapacity > (verifiedInput.covers || booking.covers)) {
-            return prisma.booking.update({
-              where: {
-                id: bookingId
-              },
-              data: {
-                dateEdited: new Date(),
-                time: verifiedInput.time || booking.time,
-                day: verifiedInput.day || booking.day,
-                dayDate: verifiedInput.dayDate || booking.dayDate,
-                month: verifiedInput.month || booking.month,
-                year: verifiedInput.year || booking.year,
-                covers: verifiedInput.covers || booking.covers,
-                tableId: tablesCapacityAvailable[0].id,
-                restaurantName: restaurant.name
-              }
-            })
+            // If there's any table available that fit all of the criterias, proceed with booking the table.
+            if (availableTables.length > 0) {
+              return prisma.booking.update({
+                where: {
+                  id: bookingId
+                },
+                data: {
+                  dateEdited: new Date(),
+                  time: verifiedInput.time || booking.time,
+                  day: verifiedInput.day || booking.day,
+                  dayDate: verifiedInput.dayDate || booking.dayDate,
+                  month: verifiedInput.month || booking.month,
+                  year: verifiedInput.year || booking.year,
+                  covers: verifiedInput.covers || booking.covers,
+                  tableNr: availableTables[0].tableNr,
+                  tableId: availableTables[0].id,
+                  restaurantName: restaurant.name
+                }
+              })
+            }
           }
           return `Restaurant doesn't have any tables that could accommodate ${verifiedInput.covers}`
         }

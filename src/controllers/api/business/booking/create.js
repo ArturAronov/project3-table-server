@@ -51,13 +51,37 @@ const controllersApiBusinessBookingCreate = async (req, res) => {
 
     const maxTableCapacity = Math.max(...tables.map((element) => element.maxCapacity))
     const daysOperatingArr = restaurant.daysOperating.split(',').map((element) => element)
+    const tableTurnaroundInt = (parseInt(restaurant.turnaround / 60) * 100) + (restaurant.turnaround % 60)
 
     // 1) Check if restaurant is open on the given day  --------------------------------------------> OK!
     // 2) Check if booking is between opening and closing hours ------------------------------------> OK!
     // 3) Check that restaurant has table large enough to facilitate the booking -------------------> OK!
 
     // Filter out which tables are suitable for the booking, given the min and max seating capacity (3.2)
-    const tablesCapacityAvailable = tables.filter((element) => element.minCapacity <= verifiedInput.covers && element.maxCapacity >= verifiedInput.covers)
+    const tablesThatFitCapacity = tables.filter((element) => element.minCapacity <= parseInt(verifiedInput.covers) && element.maxCapacity >= parseInt(verifiedInput.covers))
+
+    const getBookings = await prisma.booking.findMany({
+      where: {
+        restaurantId,
+        dayDate: verifiedInput.dayDate,
+        month: verifiedInput.month,
+        year: verifiedInput.year,
+        tableId: { in: tablesThatFitCapacity.map((element) => element.id) }
+      }
+    })
+
+    // Get all of the bookings that clash with the current booking time, and put them on the side to be filtered out later
+    const reservedTables = []
+
+    for (let i = 0; i < getBookings.length; i++) {
+      const existingBookingTime = parseInt(getBookings[i].time.split(':').join(''))
+
+      if (Math.abs(existingBookingTime - bookingTimeInt) < tableTurnaroundInt) {
+        reservedTables.push(getBookings[i])
+      }
+    }
+
+    const availableTables = tablesThatFitCapacity.filter((element) => !reservedTables.map((table) => table.tableNr).includes(element.tableNr))
 
     const checkAvailability = () => {
       // Verify if restaurant is open on the booking day (1)
@@ -66,24 +90,27 @@ const controllersApiBusinessBookingCreate = async (req, res) => {
         if (bookingTimeInt >= restaurantOpenInt && bookingTimeInt <= restaurantCloseInt) {
           // Verify that restaurant has table large enough to facilitate the booking (4)
           if (maxTableCapacity > verifiedInput.covers) {
-            return prisma.booking.create({
-              data: {
-                firstName: existingUser ? existingUser.firstName : verifiedInput.firstName,
-                lastName: existingUser ? existingUser.lastName : verifiedInput.lastName,
-                email: existingUser ? existingUser.email : verifiedInput.email,
-                phone: verifiedInput.phone,
-                covers: verifiedInput.covers,
-                time: verifiedInput.time,
-                day: verifiedInput.day,
-                dayDate: verifiedInput.dayDate,
-                month: verifiedInput.month,
-                year: verifiedInput.year,
-                tableId: tablesCapacityAvailable[0].id,
-                userId: existingUser ? existingUser.id : null,
-                restaurantName: restaurant.name,
-                restaurantId
-              }
-            })
+            if (availableTables.length > 0) {
+              return prisma.booking.create({
+                data: {
+                  firstName: existingUser ? existingUser.firstName : verifiedInput.firstName,
+                  lastName: existingUser ? existingUser.lastName : verifiedInput.lastName,
+                  email: existingUser ? existingUser.email : verifiedInput.email,
+                  phone: verifiedInput.phone,
+                  covers: verifiedInput.covers,
+                  time: verifiedInput.time,
+                  day: verifiedInput.day,
+                  dayDate: verifiedInput.dayDate,
+                  month: verifiedInput.month,
+                  year: verifiedInput.year,
+                  tableNr: availableTables[0].tableNr,
+                  tableId: availableTables[0].id,
+                  userId: existingUser ? existingUser.id : null,
+                  restaurantName: restaurant.name,
+                  restaurantId
+                }
+              })
+            }
           }
           return `Restaurant doesn't have any tables that could accomodate ${verifiedInput.covers}`
         }
