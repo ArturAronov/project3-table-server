@@ -51,13 +51,14 @@ model Booking {
   dayDate        String
   month          String
   year           String
+  tableNr        String?
   restaurantName String?
   restaurantId   String
   userId         String?
   tableId        Int?
   Restaurant     Restaurant @relation(fields: [restaurantId], references: [id])
   User           User?      @relation(fields: [userId], references: [id])
-  Table          Table?     @relation(fields: [tableId], references: [id])
+  Table          Table?     @relation(fields: [tableId, tableNr], references: [id, tableNr])
 }
 
 model Table {
@@ -70,4 +71,5 @@ model Table {
   Restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
 
   @@unique([tableNr, restaurantId])
+  @@unique([id, tableNr])
 }
