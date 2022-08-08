@@ -1,15 +1,29 @@
+import yup from 'yup'
 import prisma from '../../_helpers/prisma.js'
 import handleErrors from '../../_helpers/handle-errors.js'
 
+const userInput = yup.object({
+  id: yup.string().required(),
+  covers: yup.number().required(),
+  date: yup.string().required(),
+  month: yup.string().required(),
+  year: yup.string().required()
+})
+
 const controllersApiTimeslotsIndex = async (req, res) => {
   try {
+    const verifiedInput = await userInput.validate(req.body, {
+      abortEarly: false,
+      strinpUnknown: true
+    })
+
     const {
       id,
       covers,
       date,
       month,
       year
-    } = req.params
+    } = verifiedInput
 
     // 1 Get restaurant data ------------------------------------------------------> OK!
     //   1.1 Retrieve opening and closing times
@@ -37,7 +51,7 @@ const controllersApiTimeslotsIndex = async (req, res) => {
     })
 
     // Return all of the tables that seat covers requested by user (2.1).
-    const tablesAvailable = getTables.filter((element) => element.maxCapacity >= parseInt(covers) && element.minCapacity <= parseInt(covers))
+    const tablesAvailable = getTables.filter((element) => element.maxCapacity >= covers && element.minCapacity <= covers)
 
     // Return all of the existing bookings assigned to the tables that match the requested cover number (3).
     const getBookings = await prisma.booking.findMany({
@@ -60,19 +74,28 @@ const controllersApiTimeslotsIndex = async (req, res) => {
     // Create array with time slot templates from opening until closing (4.1).
     let minutes = 0
     let hours = 0
-    const timeSlotTemplate = new Array(timeSlotsNum + 1).fill(openInt - 100).map((element) => {
-      if (minutes % 60) {
-        element += minutes
-        element += hours
-      } else {
-        hours += 100
-        element += hours
-        minutes = 0
-      }
+    const timeSlotTemplate = new Array(timeSlotsNum + 1)
+      .fill(openInt - 100)
+      .map((element) => {
+        if (minutes % 60) {
+          element += minutes
+          element += hours
+        } else {
+          hours += 100
+          element += hours
+          minutes = 0
+        }
 
-      minutes += 15
-      return element
-    })
+        minutes += 15
+        return element
+      })
+
+    // Puts allocates time slots per each table that fits the covers criteria
+    const timeSlotsPerTable = []
+
+    for (let i = 0; i < tablesAvailable.length; i++) {
+      timeSlotsPerTable.push(...timeSlotTemplate)
+    }
 
     // Turn user input booking time into integer - ie 13:00 to 1300.
     const reservationTimes = getBookings.map((element) => parseInt(element.time.split(':').join('')))
@@ -84,7 +107,6 @@ const controllersApiTimeslotsIndex = async (req, res) => {
     const tableTurnaroundInt = (parseInt(getRestaurant.turnaround / 60) * 100) + (getRestaurant.turnaround % 60)
 
     for (let i = 0; i < timeSlotTemplate.length; i++) {
-      // console.log(blockedTimeSlots)
       for (let j = 0; j < reservationTimes.length; j++) {
         if (Math.abs(reservationTimes[j] - timeSlotTemplate[i]) < tableTurnaroundInt) {
           // If the reservation time - time slot is smaller than the table turnaround, then there's a time conflict, therefore this time slot gets blocked off and added to blockedTimeSlots array (5).
@@ -95,13 +117,25 @@ const controllersApiTimeslotsIndex = async (req, res) => {
     const maxCapacity = Math.max(...getTables.map((element) => element.maxCapacity))
 
     // Remove all of the time slots from the template that are in the blocked time slot array (6).
-    const result = timeSlotTemplate.filter((element) => !blockedTimeSlots.includes(element) && element)
+    // const result = timeSlotTemplate.filter((element) => !blockedTimeSlots.includes(element) && element)
 
-    // console.log(result)
+    const timeSlotsPerTableWithoutTimeConflicts = timeSlotsPerTable
+      .sort((a, b) => a - b)
+      .filter((element) => {
+        if (blockedTimeSlots.includes(element)) {
+          const timeIndex = blockedTimeSlots.indexOf(element)
+
+          blockedTimeSlots.splice(timeIndex, 1)
+        } else {
+          return element
+        }
+      })
+
+    const returnData = [...new Set(timeSlotsPerTableWithoutTimeConflicts)]
 
     const resultObj = {
       tableMax: maxCapacity,
-      tablesAvailable: result
+      tablesAvailable: returnData
     }
 
     return res.status(201).json(resultObj)
