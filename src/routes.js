@@ -18,7 +18,7 @@ router.delete('/api/auth/logout', (await import('./controllers/api/auth/logout.j
 router.get('/api/profile', (await import('./controllers/api/profile/index.js')).default)
 
 // API | TIME SLOTS AVAILABLE
-router.get('/api/timeslots', (await import('./controllers/api/timeslots/index.js')).default)
+router.get('/api/timeslots/:id/:covers/:date/:month/:year', (await import('./controllers/api/timeslots/index.js')).default)
 
 // API | RESTAURANTS
 router.get('/api/restaurants', (await import('./controllers/api/restaurants/index.js')).default)

@@ -2,28 +2,16 @@ import yup from 'yup'
 import prisma from '../../_helpers/prisma.js'
 import handleErrors from '../../_helpers/handle-errors.js'
 
-const userInput = yup.object({
-  id: yup.string().required(),
-  covers: yup.number().required(),
-  date: yup.string().required(),
-  month: yup.string().required(),
-  year: yup.string().required()
-})
-
 const controllersApiTimeslotsIndex = async (req, res) => {
   try {
-    const verifiedInput = await userInput.validate(req.body, {
-      abortEarly: false,
-      strinpUnknown: true
-    })
-
+    console.log(req.params)
     const {
       id,
       covers,
       date,
       month,
       year
-    } = verifiedInput
+    } = req.params
 
     // 1 Get restaurant data ------------------------------------------------------> OK!
     //   1.1 Retrieve opening and closing times
